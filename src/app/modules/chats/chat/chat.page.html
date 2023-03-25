@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start" (click)="goBack()">
+      <ion-back-button defaultHref="/home/Contacts" ></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      {{usuarioSeleccionado.nombre}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content [scrollEvents]="true" class="sin-scroll" #content>
+  <div>
+   <ion-card *ngFor="let message of messages" [class.remitente-yo]="message.sender === sender" [class.remitente-otro]="message.sender === receiver">
+     <ion-card-content>{{message.message}}</ion-card-content>
+   </ion-card>
+  </div>
+ </ion-content>
+<div class="escribirMensaje">
+  <ion-item>
+    <ion-input placeholder="Escribe un mensaje" [(ngModel)]="messajeText"></ion-input>
+    <ion-button  (click)="sendMessage()">Enviar</ion-button>
+  </ion-item>
+</div>

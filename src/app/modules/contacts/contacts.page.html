@@ -1,0 +1,13 @@
+<ion-content>
+  <div *ngFor="let usuario of usuarios" (click)="openChat(usuario)">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title >{{usuario.nombre}}
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-icon name="logo-ionic"></ion-icon> En línea
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

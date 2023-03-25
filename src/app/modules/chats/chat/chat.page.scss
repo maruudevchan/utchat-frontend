@@ -1,0 +1,49 @@
+ion-card {
+  display: flex;
+  flex-direction: column;
+  margin: 5px;
+  padding: 1px;
+  border-radius: 15px;
+  font-size: 18px;
+  width: fit-content;
+  word-wrap: break-word;
+  min-height: 100%;
+}
+
+
+
+.btnSendMessage{
+  background-color: #1f2428;
+}
+
+.remitente-yo {
+  background-color: #373d44;
+  color: white;
+  font-size: medium;
+  align-items: flex-end;
+  margin-left: auto;
+}
+
+.remitente-otro {
+  background-color: #1f2428;
+  color: white;
+  font-size: medium;
+  align-items: flex-start;
+}
+
+
+.sin-scroll::-webkit-scrollbar{
+  display: none;
+}
+
+.back-button {
+  background-color: #373d44;
+  border: none;
+  box-shadow: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  font-size: 24px;
+  color: #ffffff;
+}
+

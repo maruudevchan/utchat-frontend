@@ -1,0 +1,59 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Registrar</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-grid>
+    <ion-row style="height: 100%" class="ion-align-items-center">
+      <ion-col>
+        <ion-card class="ion-text-center">
+          <ion-card-header>
+            <ion-card-title class="ion-text-center">UTRM-Chat</ion-card-title>
+            <ion-card-subtitle class="ion-text-center">Bienvenido!</ion-card-subtitle>
+          </ion-card-header>
+          <form [formGroup]="regForm" (submit)="submit()">
+            <ion-card-content class="ion-text-center">
+              <ion-grid [fixed]="true">
+                <ion-row>
+                  <ion-col>
+                    <ion-item>
+                      <ion-label position="floating">Nombre completo</ion-label>
+                      <ion-input formControlName="nombre" type="text"></ion-input>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col>
+                    <ion-item>
+                      <ion-label position="floating">Correo electrónico</ion-label>
+                      <ion-input formControlName="username" type="email"></ion-input>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col>
+                    <ion-item>
+                      <ion-label position="floating">contraseña</ion-label>
+                      <ion-input formControlName="pwd" type="password"></ion-input>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col>
+                    <ion-button type="submit" (submit)="submit()" >Regístrame</ion-button>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col>
+                    ¿Ya tienes cuenta? <a [routerLink]="['/']" class="small-text"> Inicia sesión!</a>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-card-content>
+          </form>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
