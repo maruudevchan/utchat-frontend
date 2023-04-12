@@ -1,23 +1,29 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start" (click)="goBack()">
-      <ion-back-button defaultHref="/home/Contacts" ></ion-back-button>
+      <ion-back-button defaultHref="/home/contacts" ></ion-back-button>
     </ion-buttons>
     <ion-title>
       {{usuarioSeleccionado.nombre}}
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content [scrollEvents]="true" class="sin-scroll" #content>
-  <div>
-   <ion-card *ngFor="let message of messages" [class.remitente-yo]="message.sender === sender" [class.remitente-otro]="message.sender === receiver">
-     <ion-card-content>{{message.message}}</ion-card-content>
-   </ion-card>
+<ion-content  #content scrollEvents="true">
+  <div *ngIf="message && message.length && message[0].idChat === chatId">
+    <ion-card *ngFor="let messageItem of message; trackBy: trackByMessages" [class.remitente-yo]="messageItem.sender === sender" [class.remitente-otro]="messageItem.sender === receiver">
+      <ion-card-content>{{messageItem.message}}</ion-card-content>
+    </ion-card>
   </div>
+
+  <!-- <div *ngIf="messages.idChat">
+   <ion-card *ngFor="let messageItem of messages; trackBy: trackByMessages" [class.remitente-yo]="messageItem.sender === sender" [class.remitente-otro]="messageItem.sender === receiver">
+     <ion-card-content>{{messageItem.message}}</ion-card-content>
+   </ion-card>
+  </div> -->
  </ion-content>
 <div class="escribirMensaje">
   <ion-item>
-    <ion-input placeholder="Escribe un mensaje" [(ngModel)]="messajeText"></ion-input>
-    <ion-button  (click)="sendMessage()">Enviar</ion-button>
+    <ion-input placeholder="Escribe un mensaje" [(ngModel)]="messajeText" (keyup.enter)="sendMessage()"></ion-input>
+    <ion-button (click)="sendMessage()" (keyup.enter)="sendMessage()">Enviar</ion-button>
   </ion-item>
 </div>

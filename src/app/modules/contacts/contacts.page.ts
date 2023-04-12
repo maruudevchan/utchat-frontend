@@ -49,7 +49,6 @@ export class ContactsPage implements OnInit {
       this._contactsService.getUOnline(id).subscribe(
         (res: userRes) => {
           this.usuarios = res.data
-          console.log(this.usuarios);
         }
       );
     }

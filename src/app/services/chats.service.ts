@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
-const API_URL = environment.apiUrlLocal;
+const API_URL = environment.apiUrlTotal;
 
 
 const httpOptions = {

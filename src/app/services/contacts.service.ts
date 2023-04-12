@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
-const API_URL = environment.apiUrlLocal;
+const API_URL = environment.apiUrlTotal;
 const current = localStorage.getItem('id');
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -22,6 +22,10 @@ export class ContactsService {
 
   getUOnline(current: number): Observable<any> {
     return this.http.get(`${API_URL}getOnlineUsers/${current}`, httpOptions);
+  }
+
+  getChatsByUID(id: number): Observable<any> {
+    return this.http.get(`${API_URL}findMyChats/${id}`, httpOptions);
   }
 
 }

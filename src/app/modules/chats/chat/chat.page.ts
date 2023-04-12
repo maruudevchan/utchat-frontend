@@ -5,7 +5,7 @@ import { io } from 'socket.io-client';
 import { ChatsService } from 'src/app/services/chats.service';
 import { UsertoolsService } from 'src/app/services/usertools.service';
 
-const socket = io("http://localhost:3001", { transports: ['websocket'] });
+const socket = io("http://192.168.100.139:3001", { transports: ['websocket'] });
 
 interface messages{
   id: number;
@@ -26,17 +26,16 @@ interface messageRes{
   styleUrls: ['./chat.page.scss'],
 })
 export class ChatPage implements OnInit {
-
   usuarioSeleccionado:any;
 
-  messages: messages[] = [];
+  message: messages[] = [];
   messajeText = '';
 
   chatId = Number(localStorage.getItem('chatId'));
   sender = Number(localStorage.getItem('id'));
   receiver = Number(localStorage.getItem('id2'));
 
-  @ViewChild(IonContent, { static: true }) content!: IonContent;
+  @ViewChild('content') private content!: IonContent;
 
   constructor(
     private _chatService: ChatsService,
@@ -47,8 +46,10 @@ export class ChatPage implements OnInit {
   ngOnInit() {
     socket.on('new-message', (data) => {
       console.log('new message', data);
-      this.messages = data;
+      this.message = data;
+      console.log(this.message)
     })
+
     this.usuarioSeleccionado = this._userTools.getUsuario();
     this.bringMessages(this.chatId);
   }
@@ -57,11 +58,13 @@ export class ChatPage implements OnInit {
     socket.on('join', chatId);
     this._chatService.findMessages(this.chatId).subscribe(
       (res:messageRes) => {
-      this.messages = res.messages;
-      setTimeout(() => {
-        this.content.scrollToBottom(0);
-      }, 1);
+      this.message = res.messages;
+      console.log(this.message)
     })
+  }
+
+  ionViewDidEnter() {
+    this.content.scrollToBottom(0);
   }
 
   sendMessage(){
@@ -75,9 +78,19 @@ export class ChatPage implements OnInit {
         console.log(res);
         socket.emit('new-message', message);
         this.bringMessages(this.chatId);
+        setTimeout(() => {
+          this.content.scrollToBottom(5);
+        }, 40);
         this.messajeText = '';
       })
+  }
 
+  trackByMessages(index: number, message: messages) {
+    return message.id;
+  }
+
+  scrollToBottom() {
+    this.content.scrollToBottom(1);
   }
 
   goBack() {
@@ -85,6 +98,5 @@ export class ChatPage implements OnInit {
     localStorage.removeItem('chatId');
     localStorage.removeItem('usuario');
   }
-
 
 }
