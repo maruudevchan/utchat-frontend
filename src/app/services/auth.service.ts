@@ -27,7 +27,7 @@ export class AuthService {
 
   //metodo para registrar usuario
   register(user:user){
-    return this.http.post(`${API_URL}register`, user, httpOptions);
+    return this.http.post(`${API_URL}signin`, user, httpOptions);
   }
 
   setOnline(any:any){

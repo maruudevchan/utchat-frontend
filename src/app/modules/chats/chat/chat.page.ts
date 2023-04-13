@@ -1,20 +1,20 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular';
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 import { ChatsService } from 'src/app/services/chats.service';
 import { UsertoolsService } from 'src/app/services/usertools.service';
 
 const socket = io("http://192.168.100.139:3001", { transports: ['websocket'] });
 
-interface messages{
+interface messages {
   id: number;
   idChat: number;
   sender: number;
   message: string;
 }
 
-interface messageRes{
+interface messageRes {
   ok: boolean;
   messages: messages[];
 }
@@ -26,7 +26,7 @@ interface messageRes{
   styleUrls: ['./chat.page.scss'],
 })
 export class ChatPage implements OnInit {
-  usuarioSeleccionado:any;
+  usuarioSeleccionado: any;
 
   message: messages[] = [];
   messajeText = '';
@@ -44,6 +44,8 @@ export class ChatPage implements OnInit {
   ) { }
 
   ngOnInit() {
+    socket.emit('join-room', this.chatId);
+
     socket.on('new-message', (data) => {
       console.log('new message', data);
       this.message = data;
@@ -54,35 +56,43 @@ export class ChatPage implements OnInit {
     this.bringMessages(this.chatId);
   }
 
-  bringMessages(chatId: any){
+  bringMessages(chatId: any) {
     socket.on('join', chatId);
     this._chatService.findMessages(this.chatId).subscribe(
-      (res:messageRes) => {
-      this.message = res.messages;
-      console.log(this.message)
-    })
+      (res: messageRes) => {
+        this.message = res.messages;
+        console.log(this.message)
+      })
+
+    socket.on('new-message', (data) => {
+      if (data.idchat === chatId) {
+        this.message.push(data);
+      }
+    });
   }
 
   ionViewDidEnter() {
     this.content.scrollToBottom(0);
   }
 
-  sendMessage(){
+  async sendMessage() {
     const message = {
       idchat: this.chatId,
       sender: this.sender,
       message: this.messajeText
     }
-    this._chatService.sendMessage(message).subscribe(
-      (res) => {
-        console.log(res);
-        socket.emit('new-message', message);
-        this.bringMessages(this.chatId);
-        setTimeout(() => {
-          this.content.scrollToBottom(5);
-        }, 40);
-        this.messajeText = '';
-      })
+    try {
+      const res = await this._chatService.sendMessage(message).toPromise();
+      console.log(res);
+      socket.emit('new-message', message);
+      await this.bringMessages(this.chatId);
+      setTimeout(() => {
+        this.content.scrollToBottom(5);
+      }, 40);
+      this.messajeText = '';
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   trackByMessages(index: number, message: messages) {

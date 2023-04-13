@@ -9,8 +9,8 @@
   </ion-toolbar>
 </ion-header>
 <ion-content  #content scrollEvents="true">
-  <div *ngIf="message && message.length && message[0].idChat === chatId">
-    <ion-card *ngFor="let messageItem of message; trackBy: trackByMessages" [class.remitente-yo]="messageItem.sender === sender" [class.remitente-otro]="messageItem.sender === receiver">
+  <div>
+    <ion-card *ngFor="let messageItem of message; trackBy: trackByMessages"  [class.remitente-yo]="messageItem.sender === sender" [class.remitente-otro]="messageItem.sender === receiver">
       <ion-card-content>{{messageItem.message}}</ion-card-content>
     </ion-card>
   </div>
