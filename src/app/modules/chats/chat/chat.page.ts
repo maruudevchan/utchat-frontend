@@ -5,7 +5,7 @@ import { io, Socket } from 'socket.io-client';
 import { ChatsService } from 'src/app/services/chats.service';
 import { UsertoolsService } from 'src/app/services/usertools.service';
 
-const socket = io("http://192.168.100.139:3001", { transports: ['websocket'] });
+const socket = io("http://localhost:3001", { transports: ['polling'] });
 
 interface messages {
   id: number;
@@ -47,9 +47,8 @@ export class ChatPage implements OnInit {
     socket.emit('join-room', this.chatId);
 
     socket.on('new-message', (data) => {
-      console.log('new message', data);
+      console.log('hola')
       this.message = data;
-      console.log(this.message)
     })
 
     this.usuarioSeleccionado = this._userTools.getUsuario();
@@ -57,19 +56,16 @@ export class ChatPage implements OnInit {
   }
 
   bringMessages(chatId: any) {
-    socket.on('join', chatId);
+    // socket.on('new-message', chatId);
     this._chatService.findMessages(this.chatId).subscribe(
       (res: messageRes) => {
         this.message = res.messages;
         console.log(this.message)
       })
 
-    socket.on('new-message', (data) => {
-      if (data.idchat === chatId) {
-        this.message.push(data);
-      }
-    });
+
   }
+
 
   ionViewDidEnter() {
     this.content.scrollToBottom(0);
@@ -83,9 +79,8 @@ export class ChatPage implements OnInit {
     }
     try {
       const res = await this._chatService.sendMessage(message).toPromise();
-      console.log(res);
       socket.emit('new-message', message);
-      await this.bringMessages(this.chatId);
+      this.bringMessages(this.chatId);
       setTimeout(() => {
         this.content.scrollToBottom(5);
       }, 40);
@@ -95,9 +90,6 @@ export class ChatPage implements OnInit {
     }
   }
 
-  trackByMessages(index: number, message: messages) {
-    return message.id;
-  }
 
   scrollToBottom() {
     this.content.scrollToBottom(1);

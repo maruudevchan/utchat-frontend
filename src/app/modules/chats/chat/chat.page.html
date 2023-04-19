@@ -8,22 +8,16 @@
     </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content  #content scrollEvents="true">
+<ion-content [scrollEvents]="true" class="sin-scroll" #content>
   <div>
-    <ion-card *ngFor="let messageItem of message; trackBy: trackByMessages"  [class.remitente-yo]="messageItem.sender === sender" [class.remitente-otro]="messageItem.sender === receiver">
-      <ion-card-content>{{messageItem.message}}</ion-card-content>
-    </ion-card>
-  </div>
-
-  <!-- <div *ngIf="messages.idChat">
-   <ion-card *ngFor="let messageItem of messages; trackBy: trackByMessages" [class.remitente-yo]="messageItem.sender === sender" [class.remitente-otro]="messageItem.sender === receiver">
-     <ion-card-content>{{messageItem.message}}</ion-card-content>
+   <ion-card *ngFor="let message of message" [class.remitente-yo]="message.sender === sender" [class.remitente-otro]="message.sender === receiver">
+     <ion-card-content>{{message.message}}</ion-card-content>
    </ion-card>
-  </div> -->
+  </div>
  </ion-content>
 <div class="escribirMensaje">
   <ion-item>
     <ion-input placeholder="Escribe un mensaje" [(ngModel)]="messajeText" (keyup.enter)="sendMessage()"></ion-input>
-    <ion-button (click)="sendMessage()" (keyup.enter)="sendMessage()">Enviar</ion-button>
+    <ion-button  (click)="sendMessage()">Enviar</ion-button>
   </ion-item>
 </div>

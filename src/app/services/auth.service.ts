@@ -5,7 +5,7 @@ import user from '../models/user.model';
 
 
 
-const API_URL = environment.apiUrlTotal;
+const API_URL = environment.apiUrlLocal;
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })

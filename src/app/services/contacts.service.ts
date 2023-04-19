@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
-const API_URL = environment.apiUrlTotal;
+const API_URL = environment.apiUrlLocal;
 const current = localStorage.getItem('id');
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
