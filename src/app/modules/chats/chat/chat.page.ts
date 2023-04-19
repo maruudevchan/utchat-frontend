@@ -5,7 +5,7 @@ import { io, Socket } from 'socket.io-client';
 import { ChatsService } from 'src/app/services/chats.service';
 import { UsertoolsService } from 'src/app/services/usertools.service';
 
-const socket = io("http://localhost:3001", { transports: ['polling'] });
+const socket = io("http://localhost:3001", { transports: ['websocket'] });
 
 interface messages {
   id: number;
@@ -47,7 +47,7 @@ export class ChatPage implements OnInit {
     socket.emit('join-room', this.chatId);
 
     socket.on('new-message', (data) => {
-      console.log('hola')
+      console.log("data from socket", data)
       this.message = data;
     })
 
@@ -55,14 +55,13 @@ export class ChatPage implements OnInit {
     this.bringMessages(this.chatId);
   }
 
-  bringMessages(chatId: any) {
-    // socket.on('new-message', chatId);
+ bringMessages(chatId: any) {
+    socket.on('join', chatId);
     this._chatService.findMessages(this.chatId).subscribe(
       (res: messageRes) => {
         this.message = res.messages;
         console.log(this.message)
       })
-
 
   }
 
@@ -79,8 +78,9 @@ export class ChatPage implements OnInit {
     }
     try {
       const res = await this._chatService.sendMessage(message).toPromise();
+      console.log('response from server', res);
       socket.emit('new-message', message);
-      this.bringMessages(this.chatId);
+      await this.bringMessages(this.chatId);
       setTimeout(() => {
         this.content.scrollToBottom(5);
       }, 40);
