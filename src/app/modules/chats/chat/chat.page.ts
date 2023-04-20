@@ -26,6 +26,7 @@ interface messageRes {
   styleUrls: ['./chat.page.scss'],
 })
 export class ChatPage implements OnInit {
+  messagesLoaded = false;
   usuarioSeleccionado: any;
 
   message: messages[] = [];
@@ -55,16 +56,46 @@ export class ChatPage implements OnInit {
     this.bringMessages(this.chatId);
   }
 
- bringMessages(chatId: any) {
+  bringMessages(chatId: any) {
     socket.on('join', chatId);
+    socket.on('new-message', (data) => {
+      console.log("data from socket", data)
+      this.message = data;
+      setTimeout(() => {
+        this.content.scrollToBottom(5);
+      }, 40);
+    })
     this._chatService.findMessages(this.chatId).subscribe(
       (res: messageRes) => {
         this.message = res.messages;
-        console.log(this.message)
-      })
-
+        console.log(this.message);
+        setTimeout(() => {
+          this.content.scrollToBottom(5);
+          this.messagesLoaded = true; // actualiza la variable después de hacer el autoscroll
+        }, 40);
+      });
   }
-
+  // bringMessages(chatId: any) {
+  //   socket.on('join', chatId);
+  //   this._chatService.findMessages(this.chatId).subscribe(
+  //     (res: messageRes) => {
+  //       this.message = res.messages;
+  //       setTimeout(() => {
+  //         this.content.scrollToBottom(5);
+  //       }, 40);
+  //     });
+  // }
+//  bringMessages(chatId: any) {
+//     socket.on('join', chatId);
+//     this._chatService.findMessages(this.chatId).subscribe(
+//       (res: messageRes) => {
+//         this.message = res.messages;
+//         console.log(this.message)
+//         // setTimeout(() => {
+//         //   this.content.scrollToBottom(5);
+//         // }, 40);
+//       })
+//   }
 
   ionViewDidEnter() {
     this.content.scrollToBottom(0);
@@ -75,20 +106,70 @@ export class ChatPage implements OnInit {
       idchat: this.chatId,
       sender: this.sender,
       message: this.messajeText
-    }
+    };
     try {
       const res = await this._chatService.sendMessage(message).toPromise();
       console.log('response from server', res);
       socket.emit('new-message', message);
       await this.bringMessages(this.chatId);
-      setTimeout(() => {
+
+      // verifica si los mensajes han sido cargados en la vista del destinatario antes de hacer el autoscroll
+      if (!this.messagesLoaded) {
+        // espera un momento y verifica de nuevo
+        setTimeout(() => {
+          if (this.messagesLoaded) {
+            this.content.scrollToBottom(5);
+          }
+        }, 500);
+      } else {
+        // los mensajes han sido cargados, se puede hacer el autoscroll
         this.content.scrollToBottom(5);
-      }, 40);
+      }
+
       this.messajeText = '';
     } catch (error) {
       console.error(error);
     }
   }
+  // async sendMessage() {
+  //   const message = {
+  //     idchat: this.chatId,
+  //     sender: this.sender,
+  //     message: this.messajeText
+  //   }
+  //   try {
+  //     const res = await this._chatService.sendMessage(message).toPromise();
+  //     console.log('response from server', res);
+  //     socket.emit('new-message', message);
+  //     await this.bringMessages(this.chatId);
+  //     setTimeout(() => {
+  //       this.content.scrollToBottom(5);
+  //     }, 40);
+  //     this.messajeText = '';
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
+  // async sendMessage() {
+  //   const message = {
+  //     idchat: this.chatId,
+  //     sender: this.sender,
+  //     message: this.messajeText
+  //   }
+  //   try {
+  //     const res = await this._chatService.sendMessage(message).toPromise();
+  //     console.log('response from server', res);
+  //     socket.emit('new-message', message);
+  //     await this.bringMessages(this.chatId);
+  //     setTimeout(() => {
+  //       this.content.scrollToBottom(5);
+  //     }, 40);
+  //     this.messajeText = '';
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
+
 
 
   scrollToBottom() {
